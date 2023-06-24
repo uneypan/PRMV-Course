@@ -11,9 +11,10 @@
 *.sln.docstates
 *.mp4
 *.wav
-
+COCO
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
+Practice1/COCO/
 
 # Mono auto generated files
 mono_crash.*
