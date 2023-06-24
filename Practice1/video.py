@@ -12,11 +12,6 @@ fourcc = cv2.VideoWriter_fourcc(*'XVID')
 out = cv2.VideoWriter('output.mp4',fourcc, 30.0, (640,480))
 #规定视频输出路径，编码器，帧率，画幅
 
-sum_time = 0
-#初始化计时器
-
-pic_num = 0
-#初始化保存图片的后缀数
 
 while(cap.isOpened()):
 

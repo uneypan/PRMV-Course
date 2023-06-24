@@ -3,6 +3,11 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+from keras import models
+import tensorflow as tf
+
+
+
 
 # 反相灰度图，将黑白阈值颠倒
 def accessPiexl(img):
@@ -108,7 +113,7 @@ def transMNIST(path, borders, size=(28, 28)):
 
 # 预测手写数字
 def predict(modelpath, imgData):
-    from keras import models
+    
     my_mnist_model = models.load_model(modelpath)
     print(my_mnist_model.summary())
     img = imgData.astype('float32') / 255
@@ -120,12 +125,73 @@ def predict(modelpath, imgData):
 
 if __name__ == '__main__':
 
+    # 加载训练好的手写数字分类模型
+    model = tf.keras.models.load_model('my_mnist_model.h5')
 
-    path = 'imgs/test3.jpg'
-    model = 'my_mnist_model.h5'
-    borders = findBorderContours(path)
-    imgData = transMNIST(path, borders)
-    results = predict(model, imgData)
+    #启用外接摄像头  
+    cap = cv2.VideoCapture(0)                
+                                          
+    while(cap.isOpened()):
+
+        ret, frame = cap.read()
+
+        if ret==True:
+            
+            # 转换为灰度图像
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+            # 对图像进行阈值处理，使手写数字更加突出
+            _, thresholded = cv2.threshold(gray, 100, 255, cv2.THRESH_BINARY_INV)
+
+            # 查找轮廓
+            contours, _ = cv2.findContours(thresholded, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+            # 遍历每个轮廓
+            for contour in contours:
+                # 计算轮廓的边界框
+                x, y, w, h = cv2.boundingRect(contour)
+                 # 根据需求定义大小范围
+                width_range = [10,50]
+                height_range = [10,50]
+
+                # 检查边界框的大小是否在范围内
+                if width_range[0] <= w <= width_range[1] and height_range[0] <= h <= height_range[1]:
+
+                    # 提取边界框中的手写数字图像
+                    digit = thresholded[y:y + h, x:x + w]
+
+                    # 调整图像大小为模型所需的输入大小
+                    digit = cv2.resize(digit, (28, 28))
+
+                    # 归一化图像像素值
+                    digit = digit / 255.0
+
+                    # 扩展维度以匹配模型输入
+                    digit = np.expand_dims(digit, axis=0)
+
+                    # 使用模型进行预测
+                    prediction = model.predict(digit)
+                    digit_class = np.argmax(prediction)
+
+                    # 在原始图像中绘制识别结果
+                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                    cv2.putText(frame, str(digit_class), (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+
+            # 显示处理后的帧
+            cv2.imshow('Digit Detection', frame)
+
+            if cv2.waitKey(1) == ord('q'):        #每间隔1ms判断是否有q的退出指令从键盘输入
+                break
+        else:
+            break
+
+    #释放以及关闭进程
+    cap.release()
+
+    cv2.destroyAllWindows()
     
-    showResults(path, borders, results)
+
+
+    
+
 
