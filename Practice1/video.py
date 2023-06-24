@@ -27,7 +27,7 @@ while(cap.isOpened()):
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         # 对图像进行阈值处理，使手写数字更加突出
-        _, thresholded = cv2.threshold(gray, 125, 255, cv2.THRESH_BINARY_INV)
+        _, thresholded = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY_INV)
 
 
         h,w = 100,100
@@ -53,6 +53,7 @@ while(cap.isOpened()):
         # 在原始图像中绘制识别结果
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
         cv2.putText(frame, str(digit_class), (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+        cv2.putText(frame, str(prediction[0,int(digit_class)]), (x, y - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
         frame[y:y+h, x:x+w,0] = thresholded[y:y + h, x:x + w]
         frame[y:y+h, x:x+w,1] = thresholded[y:y + h, x:x + w]
         frame[y:y+h, x:x+w,2] = thresholded[y:y + h, x:x + w]
