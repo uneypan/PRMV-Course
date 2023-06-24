@@ -3,8 +3,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2
 from pycocotools import coco
-
-# 加载MNIST数据集
 from keras.datasets import mnist
 
 (x_train, y_train), _ = mnist.load_data()
@@ -25,15 +23,15 @@ rotation_matrix = cv2.getRotationMatrix2D((14, 14), angle, scale)
 mnist_image = cv2.warpAffine(mnist_image, rotation_matrix, (28, 28))
 
 # 加载COCO数据集
-coco_data = coco.COCO('path/to/annotations.json')  # 替换为您的COCO注释文件的路径
+coco_data = coco.COCO('COCO/instances_val2017.json')  # 替换为您的COCO注释文件的路径
 
 # 随机选择一张COCO图像
 image_ids = coco_data.getImgIds()
 coco_image_id = np.random.choice(image_ids)
-coco_image_info = coco_data.loadImgs(coco_image_id)[0]
+coco_image_info = coco_data.loadImgs(int(coco_image_id))[0]
 
 # 读取COCO图像
-coco_image_path = 'path/to/images/' + coco_image_info['file_name']  # 替换为您的COCO图像路径
+coco_image_path = 'COCO/val2017/' + coco_image_info['file_name']  # 替换为您的COCO图像路径
 coco_image = cv2.imread(coco_image_path)
 
 # 在COCO图像上叠加MNIST图像
@@ -41,7 +39,7 @@ mnist_resized = cv2.resize(mnist_image, (56, 56))
 x_pos = np.random.randint(0, coco_image.shape[1] - mnist_resized.shape[1])
 y_pos = np.random.randint(0, coco_image.shape[0] - mnist_resized.shape[0])
 
-coco_image[y_pos:y_pos + mnist_resized.shape[0], x_pos:x_pos + mnist_resized.shape[1]] = mnist_resized
+# coco_image[y_pos:y_pos + mnist_resized.shape[0], x_pos:x_pos + mnist_resized.shape[1]] = mnist_resized
 
 # 显示结果图像
 plt.figure(figsize=(10, 5))
