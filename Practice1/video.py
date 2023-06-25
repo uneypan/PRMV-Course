@@ -26,16 +26,25 @@ while(cap.isOpened()):
         # 转换为灰度图像
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        # 对图像进行阈值处理，使手写数字更加突出
-        _, thresholded = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY_INV)
+        # 11x11自适应阈值化 
+        thresh = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 2)
 
+        # 膨胀操作
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
+        dilated = cv2.dilate(thresh, kernel, iterations=1)
 
-        h,w = 100,100
+        # 腐蚀操作
+        eroded = cv2.erode(dilated, kernel, iterations=3)
+
+        # 取画面正中间的部分
+        h,w = 56,56
         y,x = gray.shape
         y,x = int(y/2-h/2),int(x/2-w/2)
 
+        input = eroded
+
         # 提取边界框中的手写数字图像
-        digit = thresholded[y:y + h, x:x + w]
+        digit = input[y:y + h, x:x + w]
 
         # 调整图像大小为模型所需的输入大小
         digit = cv2.resize(digit, (28, 28))
@@ -53,10 +62,10 @@ while(cap.isOpened()):
         # 在原始图像中绘制识别结果
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
         cv2.putText(frame, str(digit_class), (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
-        cv2.putText(frame, str(prediction[0,int(digit_class)]), (x, y - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
-        frame[y:y+h, x:x+w,0] = thresholded[y:y + h, x:x + w]
-        frame[y:y+h, x:x+w,1] = thresholded[y:y + h, x:x + w]
-        frame[y:y+h, x:x+w,2] = thresholded[y:y + h, x:x + w]
+        cv2.putText(frame, str(prediction[0,int(digit_class)]), (x, y - 30), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+        frame[y:y+h, x:x+w,0] = input[y:y + h, x:x + w]
+        frame[y:y+h, x:x+w,1] = input[y:y + h, x:x + w]
+        frame[y:y+h, x:x+w,2] = input[y:y + h, x:x + w]
         # 显示处理后的帧
         cv2.imshow('Digit Detection', frame)
 

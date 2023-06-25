@@ -15,6 +15,7 @@ COCO
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 Practice1/COCO/
+*.npy
 
 # Mono auto generated files
 mono_crash.*
