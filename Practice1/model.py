@@ -29,21 +29,6 @@ def set_global_determinism(seed):
 
 set_global_determinism(seed=42)
 
-# 导入MNIST数据集
-(train_data, train_labels), (test_data, test_labels) = mnist.load_data()
-print('train_shape {} {}'.format(train_data.shape,train_labels.shape))
-print('test_shape {} {}'.format(test_data.shape,test_labels.shape))
-
-
-# 数据预处理
-x_train = train_data.reshape((60000, 28, 28, 1))
-x_train = x_train.astype('float32')/255
-x_test = test_data.reshape((10000, 28, 28, 1))
-x_test = x_test.astype('float32')/255
-y_train = to_categorical(train_labels)
-y_test = to_categorical(test_labels)
-print(x_train.shape, y_train.shape)
-
 # 定义模型
 def model_conv():
     model = models.Sequential()
@@ -62,6 +47,22 @@ def model_conv():
 
 model = model_conv()
 print(model.summary())
+
+# 导入MNIST数据集
+(train_data, train_labels), (test_data, test_labels) = mnist.load_data()
+print('train_shape {} {}'.format(train_data.shape,train_labels.shape))
+print('test_shape {} {}'.format(test_data.shape,test_labels.shape))
+
+
+# 数据预处理
+x_train = train_data.reshape((60000, 28, 28, 1))
+x_train = x_train.astype('float32')/255
+x_test = test_data.reshape((10000, 28, 28, 1))
+x_test = x_test.astype('float32')/255
+y_train = to_categorical(train_labels)
+y_test = to_categorical(test_labels)
+print(x_train.shape, y_train.shape)
+
 
 # 数据增强(模拟摄像头输入), 数据扩增 20 倍，训练集，键盘输入‘y’保存到本地
 # Augument_MNIST(N_times=20)
