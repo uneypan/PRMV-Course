@@ -76,7 +76,7 @@ if os.path.exists('augmented_images.npy') and os.path.exists('augmented_labels.n
 print(x_train.shape, y_train.shape)
 
 # 训练模型
-history = model.fit(x_train, y_train, epochs=10, batch_size=128, validation_split=0.0)
+history = model.fit(x_train, y_train, epochs=10, batch_size=128, validation_split=0.10)
 
 # 计算测试准确度
 loss, acc = model.evaluate(x_test, y_test)
