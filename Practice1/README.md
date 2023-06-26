@@ -56,6 +56,7 @@ Augument_MNIST(N_times=20)
 ## 视频信息获取与处理
 
 
+
 <p align="center"><img decoding="async" src="视觉处理.png" width=600 centered=True></p>
 <p align="center">图 视觉处理流程</p>
 
@@ -68,10 +69,7 @@ Augument_MNIST(N_times=20)
 - 输入向量：形状为(28, 28, 1)，表示单通道的28x28像素的图像。
 - 卷积层：3层卷积层组成，卷积核个数分别为32,64,128，卷积核大小为3x3，激活函数为ReLU，后面接2x2的池化层，最后一个卷积层的输出展平为1维。
 - 全连接层：2层全连接层，第一层油128个神经元，激活函数为ReLU。第二层10个神经元，激活函数为Softmax，用于进行分类。
-- 输出向量：one-hot编码的10维分类结果。
-
-
-
+- 输出向量：10维one-hot编码的分类结果。
 
 
 <p align="center"><img decoding="async" src="model.png" width=200></p>
@@ -85,8 +83,11 @@ Augument_MNIST(N_times=20)
 
 MNIST 手写数字数据集由60000个训练数据和10000个测试数据构成，每个数据包含一张大小为28x28的灰度图，和对应的0~9编码的分类标注，训练前先转换成 one-hot 编码，便于计算交叉熵损失。
 
+对于网络的训练，随机抽取MNIST训练集中的90%作为训练集，剩余10%数据作为验证集，用于确定训练超参数。最后，使用所有测试集检验精度。所以，训练：验证：测试 = 54000：6000：10000。
+
 <p align="center"><img decoding="async" src="原始数据.png" width=600></p>
 <p align="center">图 MNIST 数据集</p>
+
 
 ### 数据增强
 
