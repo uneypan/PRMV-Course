@@ -16,7 +16,7 @@ COCO
 *.userprefs
 Practice1/COCO/
 *.npy
-*.h5
+
 
 # Mono auto generated files
 mono_crash.*
