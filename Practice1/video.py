@@ -8,7 +8,7 @@ import numpy as np
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
 
 #规定视频输出路径，编码器，帧率，画幅
-out = cv2.VideoWriter('output.mp4',fourcc, 30.0, (640,480))
+out = cv2.VideoWriter('output.mp4',fourcc, 15.0, (640,480))
 
 
 # 加载训练好的手写数字分类模型
@@ -41,7 +41,8 @@ while(cap.isOpened()):
         y,x = gray.shape
         y,x = int(y/2-h/2),int(x/2-w/2)
 
-        input = eroded
+        # 反色
+        input = 255 - eroded
 
         # 提取边界框中的手写数字图像
         digit = input[y:y + h, x:x + w]
@@ -50,7 +51,7 @@ while(cap.isOpened()):
         digit = cv2.resize(digit, (28, 28))
 
         # 归一化图像像素值
-        digit = 1 - (digit / 255.0)
+        digit = (digit / 255.0)
 
         # 扩展维度以匹配模型输入
         digit = np.expand_dims(digit, axis=0)
@@ -62,18 +63,18 @@ while(cap.isOpened()):
 
         # 在原始图像中绘制识别结果
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-        if probability > 0.97:
-            cv2.putText(frame, str(digit_class), (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
-            cv2.putText(frame, str(prediction[0,int(digit_class)]), (x, y - 40), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+        if probability > 0.70:
+            cv2.putText(frame, str(digit_class), (x+15, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+            cv2.putText(frame, '{:.1f}%'.format(probability*100), (x, y - 40), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
         else:
-            cv2.putText(frame, "N/A", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+            cv2.putText(frame, "N/A", (x, y - 40), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
 
         frame[y:y+h, x:x+w,0] = input[y:y + h, x:x + w]
         frame[y:y+h, x:x+w,1] = input[y:y + h, x:x + w]
         frame[y:y+h, x:x+w,2] = input[y:y + h, x:x + w]
         # 显示处理后的帧
         cv2.imshow('Digit Detection', frame)
-
+        out.write(frame)
         if cv2.waitKey(1) == ord('q'):        #每间隔1ms判断是否有q的退出指令从键盘输入
             break
     else:
@@ -81,13 +82,5 @@ while(cap.isOpened()):
 
 #释放以及关闭进程
 cap.release()
-
 cv2.destroyAllWindows()
-    
-
-
-
-cap.release()
 out.release()
-cv2.destroyAllWindows()
-#释放以及关闭进程
