@@ -50,7 +50,7 @@ while(cap.isOpened()):
         digit = cv2.resize(digit, (28, 28))
 
         # 归一化图像像素值
-        digit = digit / 255.0
+        digit = 1 - (digit / 255.0)
 
         # 扩展维度以匹配模型输入
         digit = np.expand_dims(digit, axis=0)
@@ -58,11 +58,16 @@ while(cap.isOpened()):
         # 使用模型进行预测
         prediction = model.predict(digit)
         digit_class = np.argmax(prediction)
+        probability = prediction[0,int(digit_class)]
 
         # 在原始图像中绘制识别结果
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-        cv2.putText(frame, str(digit_class), (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
-        cv2.putText(frame, str(prediction[0,int(digit_class)]), (x, y - 30), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+        if probability > 0.97:
+            cv2.putText(frame, str(digit_class), (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+            cv2.putText(frame, str(prediction[0,int(digit_class)]), (x, y - 40), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+        else:
+            cv2.putText(frame, "N/A", (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+
         frame[y:y+h, x:x+w,0] = input[y:y + h, x:x + w]
         frame[y:y+h, x:x+w,1] = input[y:y + h, x:x + w]
         frame[y:y+h, x:x+w,2] = input[y:y + h, x:x + w]

@@ -40,8 +40,24 @@ model = model_conv()
 print(model.summary())
 
 # 导入增强后的训练集
-# x_train = np.load('augmented_images.npy')
-# y_train = np.load('augmented_labels.npy')
+x_train = np.load('augmented_images.npy')
+y_train = np.load('augmented_labels.npy')
+
+plt.subplot(321)
+plt.imshow(x_train[0],cmap=plt.get_cmap('gray'))
+plt.subplot(322)
+plt.imshow(x_train[1],cmap=plt.get_cmap('gray'))
+plt.subplot(323)
+plt.imshow(x_train[2],cmap=plt.get_cmap('gray'))
+plt.subplot(324)
+plt.imshow(x_train[3],cmap=plt.get_cmap('gray'))
+plt.subplot(325)
+plt.imshow(x_train[4],cmap=plt.get_cmap('gray'))
+plt.subplot(326)
+plt.imshow(x_train[5],cmap=plt.get_cmap('gray'))
+# show
+plt.show()
+
 
 # 训练模型
 history = model.fit(x_train, y_train, epochs=5, batch_size=1024, validation_split=0.1)
