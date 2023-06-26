@@ -61,7 +61,7 @@ x_test = test_data.reshape((10000, 28, 28, 1))
 x_test = x_test.astype('float32')/255
 y_train = to_categorical(train_labels)
 y_test = to_categorical(test_labels)
-print(x_train.shape, y_train.shape)
+
 
 
 # 数据增强(模拟摄像头输入), 数据扩增 20 倍，训练集，键盘输入‘y’保存到本地
@@ -72,9 +72,11 @@ if os.path.exists('augmented_images.npy') and os.path.exists('augmented_labels.n
     x_train = np.load('augmented_images.npy')
     y_train = np.load('augmented_labels.npy')
 
-    
+
+print(x_train.shape, y_train.shape)
+
 # 训练模型
-history = model.fit(x_train, y_train, epochs=10, batch_size=1024, validation_split=0.1)
+history = model.fit(x_train, y_train, epochs=10, batch_size=128, validation_split=0.0)
 
 # 计算测试准确度
 loss, acc = model.evaluate(x_test, y_test)
