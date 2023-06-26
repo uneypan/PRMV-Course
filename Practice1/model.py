@@ -9,7 +9,7 @@ from keras.utils.np_utils import to_categorical
 import os
 import random
 import tensorflow as tf
-from MnistAugment import Augument_MNIST
+from augment import Augument_MNIST
 
 # 固定随机数种子保证实验可重复
 def set_seeds(seed):
@@ -73,9 +73,9 @@ if os.path.exists('augmented_images.npy') and os.path.exists('augmented_labels.n
 
     
 # 训练模型
-history = model.fit(x_train, y_train, epochs=10, batch_size=1024, validation_split=0.1)
+history = model.fit(x_train, y_train, epochs=15, batch_size=1024, validation_split=0.1)
 
-# 计算准确度
+# 计算测试准确度
 loss, acc = model.evaluate(x_test, y_test)
 print('loss {}, acc {}'.format(loss, acc))
 
@@ -88,8 +88,9 @@ plt.plot(history.history['val_acc'])
 plt.title('Model accuracy')
 plt.ylabel('Accuracy')
 plt.xlabel('Epoch')
-plt.legend(['Train', 'Test'], loc='upper left')
+plt.legend(['Train', 'Valid'], loc='upper left')
 plt.show()
+plt.savefig("")
 
 # 绘制训练 & 验证的损失值
 plt.plot(history.history['loss'])
@@ -97,5 +98,5 @@ plt.plot(history.history['val_loss'])
 plt.title('Model loss')
 plt.ylabel('Loss')
 plt.xlabel('Epoch')
-plt.legend(['Train', 'Test'], loc='upper left')
+plt.legend(['Train', 'Valid'], loc='upper left')
 plt.show()

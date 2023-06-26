@@ -1,4 +1,5 @@
-
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 from keras.datasets import mnist
 import numpy as np
 from keras.utils.np_utils import to_categorical
@@ -8,7 +9,13 @@ from skimage.util import random_noise
 from skimage.transform import resize
 import random
 from keras.preprocessing.image import ImageDataGenerator
+import os
 
+# 固定随机数种子保证实验可重复
+def set_seeds(seed):
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    random.seed(seed)
+    np.random.seed(seed)
 
 # 二值化函数
 def mybinfun(image):
@@ -25,9 +32,8 @@ def mybinfun(image):
 
     return image.reshape(shape)
 
-# 添加椒盐噪声函数
+# 添加盐噪声函数
 def salt_noise(image):
-
     rows, cols = image.squeeze().shape
     min_size=1
     max_size=2
@@ -55,24 +61,25 @@ def gauss_noise(image):
 
     # Half resolution
     noise_im2 = np.zeros((rows//2, cols//2))
-    noise_im2 = random_noise(noise_im2, mode='gaussian', var=(val*2)**2, clip=False)  # Use val*2 (needs tuning...)
+    noise_im2 = random_noise(noise_im2, mode='gaussian', var=(val*2)**2, clip=False)  
     noise_im2 = resize(noise_im2, (rows, cols))  # Upscale to original image size
 
     # Quarter resolution
     noise_im3 = np.zeros((rows//4, cols//4))
-    noise_im3 = random_noise(noise_im3, mode='gaussian', var=(val*4)**2, clip=False)  # Use val*4 (needs tuning...)
-    noise_im3 = resize(noise_im3, (rows, cols))  # What is the interpolation method?
+    noise_im3 = random_noise(noise_im3, mode='gaussian', var=(val*4)**2, clip=False)  
+    noise_im3 = resize(noise_im3, (rows, cols))  
 
-    noisy_image = noise_im1 + noise_im2 + noise_im3  # Sum the noise in multiple resolutions (the mean of noise_im is around zero).
-    noisy_image = image.reshape(noisy_image.shape) + noisy_image  # Add noise_im to the input image.
+    noisy_image = noise_im1 + noise_im2 + noise_im3  
+    noisy_image = image.reshape(noisy_image.shape) + noisy_image  
     
     noisy_image = mybinfun(noisy_image)
-
     noisy_image = salt_noise(noisy_image)
     
     return noisy_image.reshape(image.shape)
 
 def Augument_MNIST(N_times = 20):
+
+    set_seeds(42)
 
     # 导入MNIST数据集
     (train_data, train_labels), (test_data, test_labels) = mnist.load_data()
@@ -105,25 +112,26 @@ def Augument_MNIST(N_times = 20):
     datagen.fit(x_train)
 
     # 生成增广后的数据
-    augmented_data_generator = datagen.flow(x_train, y_train, batch_size=60000, shuffle=True)
+    augmented_data_generator = datagen.flow(x_train, y_train, batch_size=600,shuffle=False)
 
     augmented_images = []
     augmented_labels = []
 
     # 扩增 N_times 倍
     for i in range(N_times):
-        print("Data Augument Epoch({}/{}) ".format(i+1,N))
+        print("Data Augument Epoch({}/{}) ".format(i+1,N_times))
         augmented_data = next(augmented_data_generator)
         augmented_images.append(augmented_data[0])
         augmented_labels.append(augmented_data[1])
 
+    # 合并原始数据
     augmented_images.append(x_train)
     augmented_labels.append(y_train)
 
     x_train = np.concatenate(augmented_images, axis=0)
     y_train = np.concatenate(augmented_labels, axis=0)
 
-    # 显示前N*N张训练数据
+    # 展示前N*N张训练数据
     N = 5
     fig, axs = plt.subplots(nrows=N, ncols=N)
     ax = axs.flatten()  
@@ -135,12 +143,12 @@ def Augument_MNIST(N_times = 20):
     plt.show()
 
     # 保存增广后的数据
-    user_input = input("是否保存数据集?(y/n): ")
+    user_input = input("是否保存这个扩增数据集?(y/n): ")
     if user_input == 'y':
         np.save('augmented_images.npy', x_train)
         np.save('augmented_labels.npy', y_train)
 
 if __name__ == "__main__":
     
-    Augument_MNIST()
+    Augument_MNIST(1)
 
