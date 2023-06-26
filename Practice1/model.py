@@ -62,8 +62,6 @@ def model_conv():
 
 model = model_conv()
 print(model.summary())
-# from keras.utils import plot_model
-# plot_model(model, to_file='model.png',dpi=300,show_shapes=True,show_layer_activations=True)
 
 # 数据增强(模拟摄像头输入), 数据扩增 20 倍，训练集，键盘输入‘y’保存到本地
 # Augument_MNIST(N_times=20)
