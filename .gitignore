@@ -9,7 +9,6 @@
 *.user
 *.userosscache
 *.sln.docstates
-*.mp4
 *.wav
 COCO
 # User-specific files (MonoDevelop/Xamarin Studio)
