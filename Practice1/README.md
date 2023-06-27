@@ -23,7 +23,7 @@ python video.py
 
 退出使用按键'q'。
 
-<p align="center"><img decoding="async" src="视频截图.png" width=400 centered=True></p>
+<p align="center"><img decoding="async" src="img/视频截图.png" width=400 centered=True></p>
 <p align="center">图 视频流中手写数字识别的结果</p>
 
 
@@ -54,7 +54,7 @@ Augument_MNIST(N_times=20)
 
 
 
-<p align="center"><img decoding="async" src="视觉处理.png" width=600 centered=True></p>
+<p align="center"><img decoding="async" src="img/视觉处理.png" width=600 centered=True></p>
 <p align="center">图 视觉处理流程</p>
 
 
@@ -69,7 +69,7 @@ Augument_MNIST(N_times=20)
 - 输出向量：10维one-hot编码的分类结果。
 
 
-<p align="center"><img decoding="async" src="model.png" width=200></p>
+<p align="center"><img decoding="async" src="img/model.png" width=200></p>
 <p align="center">图 卷积网络定义</p>
 
 ## 数据集构建
@@ -82,7 +82,7 @@ MNIST 手写数字数据集由60000个训练数据和10000个测试数据构成�
 
 对于网络的训练，随机抽取MNIST训练集中的90%作为训练集，剩余10%数据作为验证集，用于确定训练超参数。最后，使用所有测试集检验精度。所以，训练：验证：测试 = 54000：6000：10000。
 
-<p align="center"><img decoding="async" src="原始数据.png" width=600></p>
+<p align="center"><img decoding="async" src="img/原始数据.png" width=600></p>
 <p align="center">图 MNIST 数据集</p>
 
 
@@ -92,7 +92,7 @@ MNIST 手写数字数据集由60000个训练数据和10000个测试数据构成�
 
 
 
-<p align="center"><img decoding="async" src="数据增强.png" width=600></p>
+<p align="center"><img decoding="async" src="img/数据增强.png" width=600></p>
 <p align="center">图 数据增强过程</p>
 
 - 原始数据是一些手写数字笔画的灰度图。
@@ -125,7 +125,7 @@ $$
 
 如果采用SGD训练网络，可能需要多次调整学习率才能得到到最佳的训练超参数。而Adam优化器是RMSProp和动量法结合的产物，使用它的好处是学习率的选择较为宽松，训练采用学习率=0.001。
 
-<p align="center"><img decoding="async" src="预训练-验证损失.png" width=400><img decoding="async" src="预训练-验证精度.png" width=400></p>
+<p align="center"><img decoding="async" src="img/预训练-验证损失.png" width=400><img decoding="async" src="img/预训练-验证精度.png" width=400></p>
 <p align="center">图 预训练过程损失曲线和精度曲线</p>
 
 为了确定训练轮数，首先训练了15轮。可见训练10轮以上之后，模型在验证集上没有明显提升，因此确定训练轮数为10。合并训练集和验证集，分别在MNIST训练集和增广训练集上进行10轮训练，得到两种模型。
