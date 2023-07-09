@@ -1,20 +1,19 @@
 ![](images/demo.gif)
 
-这个项目是使用 YOLOv5s 和 CRNN 对 CCPD 车牌进行检测和识别。
+这个项目是使用 YOLOv5s 和 CRNN 对 视频流中的车牌进行检测和识别。
 
 主要参考以下2个仓库：
 
 1. Github: [https://github.com/we0091234/crnn_plate_recognition](https://github.com/we0091234/crnn_plate_recognition)
 2. Github: [https://github.com/ultralytics/yolov5](https://github.com/ultralytics/yolov5)
 
-## Demo 效果演示
-
+## 环境配置
+在 Windows 10  和 Ubuntu 18.04.6 LTS 上测试通过。
 ```
-conda deactivate
-conda create -n test python=3.8
-conda activate test
 pip install -r requirements.txt 
 ```
+
+## Demo 效果演示
 
 准备一个测试视频 *example.mp4* 运行 `main.py` 查看效果
 ```
@@ -64,12 +63,9 @@ python setup.py
 
 ## 训练和测试 CRNN
 
-数据集采用 [we0091234](https://github.com/we0091234/crnn_plate_recognition) 从CCPD和CRPD截下来的车牌小图和收集的一部分车牌，已经划分训练集和验证集:
-- [https://pan.baidu.com/s/1xT-F3E5U3ul3o6gu6Zk94g](https://pan.baidu.com/s/1xT-F3E5U3ul3o6gu6Zk94g)  提取码：*g08q*
+这里偷了个懒，没有从CCPD里面去截取车牌。采用了 [we0091234](https://github.com/we0091234/crnn_plate_recognition) 从CCPD和CRPD截下来的车牌小图和收集的一部分车牌，已经划分训练集和验证集，但没有测试集:
 
-
-
-这里偷了个懒，没有自己从CCPD里面去截取车牌。
+百度云链接：[https://pan.baidu.com/s/1xT-F3E5U3ul3o6gu6Zk94g](https://pan.baidu.com/s/1xT-F3E5U3ul3o6gu6Zk94g)  提取码：*g08q*
 
 1. 在目录的上一级目录新建一个 */CCPD_LISENCE* 文件夹, 将 *train_plate.tar.gz* 和 *val_verify.rar* 放在里面
 
