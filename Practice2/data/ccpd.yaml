@@ -1,0 +1,8 @@
+path: ../CCPD_YOLO
+train: ../CCPD_YOLO/images/train
+val: ../CCPD_YOLO/images/val
+test: ../CCPD_YOLO/images/test
+
+nc: 1
+names: ['licence']
+
