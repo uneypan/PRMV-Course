@@ -35,9 +35,8 @@ $$
 $$
 
 相机的成像平面为一个到光心 $O$ 的距离为 $f$、垂直于 $Z$ 轴且在 $Z$ 轴正向的一个平面。在这个平面上，我们定义成像平面坐标系。根据相似三角形的知识容易知道，$\mathbf{p}_c$ 在成像平面坐标系下的投影点的坐标$(x, y)^T$ 为，
-
 $$
-\begin{aligned}\begin{cases}x=f\dfrac{x_c}{z_c}\\{}\\y=f\dfrac{y_c}{z_c}&\end{cases}\end{aligned} \tag{2}
+\begin{cases}x=f\dfrac{x_c}{z_c}\\{}\\y=f\dfrac{y_c}{z_c}&\end{cases}\tag{2}
 $$
 
 其齐次坐标表达为
@@ -97,7 +96,7 @@ y_d=y_n\left(1+k_1r^2+k_2r^4\right)+2\rho_2x_ny_n+\rho_1\left(r^2+2y_n^2\right)+
 \end{cases} \tag{11}
 $$
 
-其中，$r^2 = x_n^2 + y_n^2$。和切向畸变相关的两个参数$\rho_1$,$\rho_2$，和径向畸变有关的参数$k_1$,$k_2$,$k_3$，它们也是相机的内参数，引入畸变算子$\mathcal{D}$来表达。考虑了镜头畸变的完整的相机成像模型为
+其中，$r^2 = x_n^2 + y_n^2$。和切向畸变相关的两个参数$\rho_1$,$\rho_2$，和径向畸变有关的参数$k_1$,$k_2$,$k_3$，它们也是相机的内参数，引入畸变算子$\mathcal{D}(\cdot)$来表达。考虑了镜头畸变的完整的相机成像模型为
 
 $$
 \mathbf{u}=K\cdot\mathcal{D}\left\{\frac1{z_c}\begin{bmatrix}R&\mathbf{t}\end{bmatrix}_{3\times4}\mathbf{p}_w\right\} \tag{12}
