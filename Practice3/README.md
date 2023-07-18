@@ -91,8 +91,8 @@ $$
 在以成像模型中同时考虑镜头的径向畸变和切向畸变。假设在没有镜头畸变时,归一化成像平面坐标系下的一点为$(x_n,y_n)^T$,当发生了径向与切向畸变之后,这一点被映射到了$(x_d,y_d)^T$,则$(x_d,y_d)^T$与$(x_n,y_n)^T$之间的关系可被表达为,
 $$
 \begin{cases}
-x_n\left(1+k_1r^2+k_2r^4\right)+2\rho_1x_ny_n+\rho_2\left(r^2+2x_n^2\right)+x_nk_3r^6\\
-y_d=y_n\left(1+k_1r^2+k_2r^4\right)+2\rho_2x_ny_n+\rho_1\left(r^2+2y_n^2\right)+y_nk_3r^6
+x_n(1+k_1r^2+k_2r^4)+2\rho_1x_ny_n+\rho_2(r^2+2x_n^2)+x_nk_3r^6\\
+y_d=y_n(1+k_1r^2+k_2r^4)+2\rho_2x_ny_n+\rho_1(r^2+2y_n^2)+y_nk_3r^6
 \end{cases} \tag{11}
 $$
 
