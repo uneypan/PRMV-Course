@@ -28,14 +28,15 @@ P = estimate_pwu(U, W)
 print(P)
 
 # 加载视频
-video_path = 'car5.mp4'
+video_path = 'car.mp4'
 cap = cv2.VideoCapture(video_path)
 
 # 获取视频信息
 width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 # fps = cap.get(cv2.CAP_PROP_FPS)
-fps = 240 # 由于编码问题不能自动获取，需要手动设置
+# 由于编码问题不能自动获取，需要手动设置
+fps = 240 
 
 #规定视频输出路径，编码器，帧率，画幅
 output_path = 'output.mp4'
@@ -108,22 +109,30 @@ while cap.isOpened():
         str = "Nowtime: {:.2f}s  ".format(index/fps)
 
         # 为新特征点创建Kalman滤波器
-        if x_position > 0 and finish_flag == False:      
+        if x_position > 0 and finish_flag == False:    
+
             if 'kf' not in locals():
+
                 # 初始化滤波器
-                kf = KalmanFilter(Q1=1,Q2=0.01,R1=4,P1=16,P2=4)
+                kf = KalmanFilter(Q1=0.1,Q2=0.01,R1=4,P1=16,P2=4)
                 kf.x = np.asanyarray([x_position,2])
+
             else:
+
                 # 更新滤波器
                 kf.run(z=x_position)
+
                 # 计算实时速度
                 velocity = kf.x[1] / 100 * fps * 3.6
                 str += "Realtime velocity: {:.1f}km/h. ".format(velocity)
+
                 # 如果车头经过停止线前沿，则记录时间
                 if abs(kf.x[0] - stopline_x_positon) <= 0.5:
                     t1 = index/fps
+
                 if abs(kf.x[0] - stopline_x_positon - stopline_width) <= 0.5:
                     t2 = index/fps
+
                 # 如果车头位置超过停止线后沿，则停止测速
                 if kf.x[0] > stopline_x_positon+stopline_width:
                     finish_flag = True
