@@ -35,7 +35,8 @@ cap = cv2.VideoCapture(video_path)
 width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 # fps = cap.get(cv2.CAP_PROP_FPS)
-fps = 240 # 由于编码问题不能自动获取，需要手动设置
+# 由于编码问题不能自动获取，需要手动设置
+fps = 240 
 
 #规定视频输出路径，编码器，帧率，画幅
 output_path = 'output.mp4'
@@ -119,12 +120,15 @@ while cap.isOpened():
                 kf = KalmanFilter(Q1=0.001,Q2=0.001,R1=81,P1=16,P2=0.1)
                 kf.x = np.asanyarray([x_position,2.5])
             else:
+
                 # 更新滤波器
                 kf.run(z=x_position)
+
                 # 计算实时速度
                 filted_position = kf.x[0]
                 velocity = kf.x[1] / 100 * fps * 3.6
                 str += "Realtime velocity: {:.1f}km/h. ".format(velocity)
+
                 # 如果车头经过停止线前沿，则记录时间
                 if kf.x[0] - stopline_x_positon > 0 and t1==0:
                     t1 = index/fps
