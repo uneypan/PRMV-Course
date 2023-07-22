@@ -8,7 +8,7 @@
 2. Github: [https://github.com/ultralytics/yolov5](https://github.com/ultralytics/yolov5)
 
 ## 环境配置
-在 Windows 10  和 Ubuntu 18.04.6 LTS 上测试通过。
+在 Windows 10  和 Ubuntu 18.04.6 上测试通过。
 ```
 pip install -r requirements.txt 
 ```
