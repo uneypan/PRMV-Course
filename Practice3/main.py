@@ -182,12 +182,12 @@ while cap.isOpened():
         cv2.imshow('undisort birdview', birdseye_frame)
         cv2.imshow('changed pixels between images', binary_diff)
         cv2.imshow('histogram of changed pixels', plot_image)
-        if(index==400):
-            cv2.imwrite("frame.jpg",frame)
-            cv2.imwrite("birdseye.jpg",birdseye_frame)
-            cv2.imwrite("undisort.jpg",gray)
-            cv2.imwrite("changed pixels between images.jpg",binary_diff)
-            cv2.imwrite("histogram.jpg",plot_image)
+        # if(index==400):
+        #     cv2.imwrite("frame.jpg",frame)
+        #     cv2.imwrite("birdseye.jpg",birdseye_frame)
+        #     cv2.imwrite("undisort.jpg",gray)
+        #     cv2.imwrite("changed pixels between images.jpg",binary_diff)
+        #     cv2.imwrite("histogram.jpg",plot_image)
 
         # 按q键退出 按s键暂停
         if cv2.waitKey(1) & 0xFF == ord('q'):
