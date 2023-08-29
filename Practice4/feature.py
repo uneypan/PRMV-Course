@@ -1,5 +1,6 @@
 from math import *
 import cv2
+import numpy as np
 
 def feature(img):
     
@@ -179,8 +180,16 @@ def feature(img):
     print(features)
     # for i in range(len(features)):
     #     txtFeature.insert(END, str(features[i]) + '\n')
+
+    img = img.astype(np.uint8)
     for m in range(len(features)):
+        center = (int(features[m][1]), int(features[m][0]))
         if features[m][2] == "endpoint":
-            cv2.circle(img, (features[m][1], features[m][0]), 3, (0, 0, 255), 1)
+            
+            cv2.circle(img, center, 3, 0, 1)
         else:
-            cv2.circle(img, (features[m][1], features[m][0]), 3, (0, 0, 255), -1)
+            cv2.circle(img, (int(features[m][1]), int(features[m][0])), 3, (0, 0, 255), -1)
+    
+    cv2.imwrite("feature.jpg",img)
+
+    return img

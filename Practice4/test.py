@@ -6,18 +6,14 @@ from thinning import thinning
 from feature import feature 
 
 
-
-
 if __name__ == "__main__":
         
-    img_path = "DB3_B/101_1.tif"
+    img_path = "DB3_B/109_4.tif"
 
     if img_path:
         print(img_path)
         img = cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), cv2.IMREAD_COLOR)
-        cv2.imshow("img",img)
-
-
+    
         if len(img.shape) > 2:
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)  # 转灰度图
 
@@ -28,13 +24,16 @@ if __name__ == "__main__":
         new_cols = new_rows / aspect_ratio
 
         img = cv2.resize(img, (int(new_cols), int(new_rows)))
+        cv2.imshow("img",img)
 
         img = image_enhance(img)
+        # cv2.imshow("enhance",img)
 
         img = thinning(img)
+        cv2.imshow("thinning",img.astype(np.uint8))
 
 
         feat = feature(img)
+        # cv2.imshow("feat",feat)
 
-
-        cv2.waitKey(0)
+        # cv2.waitKey(0)

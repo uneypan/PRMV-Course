@@ -1,3 +1,5 @@
+import cv2
+
 def VThin(image, array):
 
     h, w = image.shape
@@ -68,5 +70,5 @@ def thinning(img, num=10):
     for i in range(num):
         VThin(img, array)
         HThin(img, array)
-   
+    
     return img

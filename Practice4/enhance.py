@@ -5,22 +5,33 @@ from scipy import signal
 from scipy import ndimage
 from math import *
 
+
+def normalize_image(image):
+    normalized_image = (image - np.min(image)) / (np.max(image) - np.min(image)) * 255
+    return normalized_image.astype(np.uint8)
+
 def image_enhance(img):
     
     normim, mask = ridge_segment(img, blksze = 16, thresh = 0.1)  # normalise the image and find a ROI
-    cv2.imshow("norm", normim)
+    cv2.imwrite("norm.jpg", normim)
     
 
     orientim = ridge_orient(im = normim, gradientsigma = 1, blocksigma = 7, orientsmoothsigma = 7)  # find orientation of every pixel
-    cv2.imshow("orient", orientim)
+    
+    color_map = cv2.COLORMAP_JET 
+    normalized_image = ((orientim / np.pi) * 255).astype(np.uint8)
+    color_image = cv2.applyColorMap(normalized_image, color_map)
+    cv2.imwrite('Orientation Image.jpg', color_image)
 
+    orientafld =orientation_field(img,orientim)
+    cv2.imwrite('Orientation Field.jpg', orientafld)
 
     freq, medfreq = ridge_freq(im = normim, mask = mask, orient = orientim, blksze = 38, windsze = 5, minWaveLength = 5,
                                maxWaveLength = 15)  # find the overall frequency of ridges
-    cv2.imshow("freq", freq)
+    cv2.imwrite("frequency.jpg", freq)
 
     newim = ridge_filter(im = normim, orient = orientim, freq = medfreq * mask, kx = 0.65, ky = 0.65)  # create gabor filter and do the actual filtering
-    cv2.imshow("new",newim)
+    cv2.imwrite("enhance.jpg",newim)
 
     img = 255 * (newim >= -3)
     
@@ -36,6 +47,8 @@ def normalise(img):
 def ridge_segment(im, blksze, thresh):  # img,16,0.1
 
     rows, cols = im.shape
+
+    origin = im.copy()
 
     im = normalise(im)  # normalise to get zero mean and unit standard deviation 
 
@@ -57,11 +70,26 @@ def ridge_segment(im, blksze, thresh):  # img,16,0.1
 
     mask = stddevim > thresh
 
-    mean_val = np.mean(im[mask])
+    mean_val = np.mean(im)
 
-    std_val = np.std(im[mask])
+    std_val = np.std(im)
+
+    mask = stddevim > thresh    
+
+    # my code
+    # mask = origin > mean_val
+    # mean_val = np.mean(origin)
+    # std_val = np.std(origin)
+    # mean_tar = 150 
+    # std_tar = 50
+    # normim = np.zeros(origin.shape)
+
+    # normim[mask] = mean_tar + np.sqrt(np.divide(std_tar * np.power(origin[mask]- mean_val, 2),std_val))
+    # normim[~mask] = mean_tar - np.sqrt(np.divide(std_tar * np.power(origin[~mask]- mean_val, 2),std_val))
+    # normim = 255 - normalize_image(normim)
 
     normim = (im - mean_val) / (std_val)
+    mask = stddevim > thresh
 
     return (normim, mask)
 
@@ -117,6 +145,25 @@ def ridge_orient(im, gradientsigma, blocksigma, orientsmoothsigma):
     orientim = np.pi / 2 + np.arctan2(sin2theta, cos2theta) / 2
     return orientim
 
+def orientation_field(img,orientim):
+
+    line_length = 2.5
+    delta_x = line_length * np.cos(orientim)
+    delta_y = line_length * np.sin(orientim)
+    image_size = orientim.shape
+    # orientafield = np.ones((*image_size, 3), dtype=np.uint8) * 0  
+
+    orientafield = img.copy()
+
+    block_size = 8
+    for y in range(0, image_size[0], block_size):
+        for x in range(0, image_size[1], block_size):
+            center = (x + block_size // 2, y + block_size // 2)
+            end_point = (int(center[0] + delta_x[y, x]), int(center[1] + delta_y[y, x]))
+            start_point = (int(center[0] - delta_x[y, x]), int(center[1] - delta_y[y, x]))
+            cv2.line(orientafield, start_point, end_point, (255, 255, 255), 1)
+    
+    return orientafield
 
 def ridge_freq(im, mask, orient, blksze, windsze, minWaveLength, maxWaveLength):
     rows, cols = im.shape

@@ -63,7 +63,7 @@ def image_enhance():
     newim = ridge_filter(normim, orientim, freq, kx, ky)  # create gabor filter and do the actual filtering
     # imshow("new",newim)
 
-    img = 255 * (newim >= -3)
+    img = 255 * (newim >= -3).astype(np.uint)
     # print(img)
     show(img, enhanceImg)
 
