@@ -1,14 +1,10 @@
+# -*- coding: utf-8 -*-
 import numpy as np
 import scipy
 import cv2
 from scipy import signal
 from scipy import ndimage
 from math import *
-
-
-def normalize_image(image):
-    normalized_image = (image - np.min(image)) / (np.max(image) - np.min(image)) * 255
-    return normalized_image.astype(np.uint8)
 
 def image_enhance(img):
     
@@ -341,3 +337,81 @@ def ridge_filter(im, orient, freq, kx, ky):
 
 
 
+def enhance_Thres(image):
+
+    # 初步二值化
+    img = 255 * (image >= -3)
+    cv2.imwrite("first_Thres.png",img)
+
+    # 寻找指纹区域的掩膜
+    finger_mask = mask_finder(img)
+
+    # 自适应阈值二值化
+    img = cv2.adaptiveThreshold(normalize_image(image), 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 11, 2)
+
+    # 将掩膜应用到原始图像上，提取指纹区域
+    img = cv2.bitwise_and(img, img, mask=finger_mask)
+
+    # 创建一个与指纹图像相同尺寸的白色背景
+    white_background = 255 - finger_mask
+    
+    # 将指纹区域与白色背景叠加，得到保持白色背景的指纹图像
+    img = cv2.add(white_background, img)
+    cv2.imwrite("beforeAreafilted.png",img)
+    # 对图像进行面积过滤
+    img = area_filter(img)
+    
+    return img
+
+def mask_finder(fingerprint_image):
+
+    # 对图像进行预处理，例如高斯模糊和二值化
+    blurred_image = cv2.GaussianBlur(fingerprint_image.astype(np.uint8), (25, 25), 0)
+    cv2.imwrite("blurred_image.png",blurred_image)
+   
+    threshold_value, thresholded_image = cv2.threshold(blurred_image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    thresholded_image = 255 - thresholded_image
+    cv2.imwrite("thresholded_image.png",thresholded_image)
+    
+    # 寻找图像中的轮廓
+    contours, _ = cv2.findContours(thresholded_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    # 找到最大轮廓
+    max_contour = max(contours, key=cv2.contourArea)
+
+    # 创建一个掩膜来表示最大轮廓区域
+    mask = np.zeros_like(fingerprint_image).astype(np.uint8)
+    
+    cv2.drawContours(mask, [max_contour], 0, 255, -1)
+
+    return mask
+
+
+def normalize_image(image):
+    # 归一化处理转uint8方便显示
+    normalized_image = (image - np.min(image)) / (np.max(image) - np.min(image)) * 255
+    return normalized_image.astype(np.uint8)
+
+
+def area_filter(image):
+
+    # 反转图像，使指纹为白色，背景为黑色
+    inverted_image = cv2.bitwise_not(image)
+
+    # 连通域标记
+    _, labels, stats, centroids = cv2.connectedComponentsWithStats(inverted_image.astype(np.uint8))
+
+    # 设定阈值来过滤孤立块和孔洞
+    min_area_threshold = 15  # 可根据实际情况调整
+
+    # 创建一个全白图像，将保留的连通域绘制上去
+    filtered_image = np.ones_like(inverted_image) * 255
+
+    for label, stat in enumerate(stats):
+        area = stat[4]  # 连通域的面积
+        if label == 0:  # 跳过背景
+            continue
+        if area > min_area_threshold:
+            filtered_image[labels == label] = 0
+
+    return filtered_image.astype(np.uint8)

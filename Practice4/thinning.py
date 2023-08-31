@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# https://www.cnblogs.com/xianglan/archive/2011/01/01/1923779.html
+
 import cv2
 
 def VThin(image, array):
