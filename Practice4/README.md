@@ -17,3 +17,7 @@
 2. 点击`选择图片`按钮，选择一张图片
 3. 点击`一键处理`按钮，等待特征提取完成
 4. 点击`退出`按钮，退出程序
+
+## 参考仓库
+
+![https://github.com/KinghooWei/FingerprintFeatureExtractionAndDescription](https://github.com/KinghooWei/FingerprintFeatureExtractionAndDescription)
